@@ -43,6 +43,16 @@ class ProjectState extends State {
     addProject(title, description, numOfPeople) {
         const newProject = new Project(Math.random().toString(), title, description, numOfPeople, Status.Active);
         this.projects.push(newProject);
+        this.updateListener();
+    }
+    moveProject(projectId, newStatus) {
+        const project = this.projects.find(project => project.id === projectId);
+        if (project && project.status !== newStatus) {
+            project.status = newStatus;
+            this.updateListener();
+        }
+    }
+    updateListener() {
         for (const listenerFn of this.listeners) {
             listenerFn(this.projects.slice());
         }
@@ -112,7 +122,8 @@ class ProjectItem extends Component {
         return `Person${this.project.people > 1 ? 's' : ''}`;
     }
     onDragStart(event) {
-        console.log(event);
+        event.dataTransfer.setData('text/plain', this.project.id);
+        event.dataTransfer.effectAllowed = 'move';
     }
     onDragEnd(_) {
         console.log('Drag End');
@@ -140,13 +151,19 @@ class ProjectList extends Component {
         this.render();
     }
     dragOverHandler(event) {
-        throw new Error("Method not implemented.");
+        if (event.dataTransfer && event.dataTransfer.types[0] === 'text/plain') {
+            event.preventDefault();
+            const listEl = this.element.querySelector('ul');
+            listEl.classList.add('droppable');
+        }
     }
     dropHandler(event) {
-        throw new Error("Method not implemented.");
+        const projectId = event.dataTransfer.getData('text/plain');
+        projectState.moveProject(projectId, this.type === 'active' ? Status.Active : Status.Finished);
     }
-    dragLeaveHandler(event) {
-        throw new Error("Method not implemented.");
+    dragLeaveHandler(_) {
+        const listEl = this.element.querySelector('ul');
+        listEl.classList.remove('droppable');
     }
     render() {
         const listId = `${this.type}-projects-list`;
@@ -155,6 +172,9 @@ class ProjectList extends Component {
     }
     ;
     configure() {
+        this.element.addEventListener('dragover', this.dragOverHandler);
+        this.element.addEventListener('dragleave', this.dragLeaveHandler);
+        this.element.addEventListener('drop', this.dropHandler);
         projectState.addListener((projects) => {
             const filteredProjects = projects.filter(project => {
                 if (this.type === 'active') {
@@ -176,6 +196,15 @@ class ProjectList extends Component {
     }
     ;
 }
+__decorate([
+    autoBind
+], ProjectList.prototype, "dragOverHandler", null);
+__decorate([
+    autoBind
+], ProjectList.prototype, "dropHandler", null);
+__decorate([
+    autoBind
+], ProjectList.prototype, "dragLeaveHandler", null);
 class ClientForm extends Component {
     constructor() {
         super('project-input', 'app', true, 'user-input');

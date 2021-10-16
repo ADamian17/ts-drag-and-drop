@@ -69,6 +69,19 @@ class ProjectState extends State<Project> {
     );
 
     this.projects.push(newProject);
+    this.updateListener()
+  }
+
+  moveProject(projectId: string, newStatus: Status) {
+    const project = this.projects.find(project => project.id === projectId);
+
+    if (project && project.status !== newStatus) {
+      project.status = newStatus;
+      this.updateListener()
+    }
+  }
+
+  private updateListener() {
     for (const listenerFn of this.listeners) {
       listenerFn(this.projects.slice());
     }
@@ -201,12 +214,12 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> implements 
 
   @autoBind
   onDragStart(event: DragEvent): void {
-    console.log(event);
+    event.dataTransfer!.setData('text/plain', this.project.id);
+    event.dataTransfer!.effectAllowed = 'move';
   }
 
   onDragEnd(_: DragEvent): void {
     console.log('Drag End');
-
   }
 
   configure() {
@@ -235,16 +248,28 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> implements Drag
     this.render();
   }
 
+  @autoBind
   dragOverHandler(event: DragEvent): void {
-    throw new Error("Method not implemented.");
+    if (event.dataTransfer && event.dataTransfer.types[0] === 'text/plain') {
+      event.preventDefault()
+      const listEl = this.element.querySelector('ul')!;
+      listEl.classList.add('droppable');
+    }
   }
 
+  @autoBind
   dropHandler(event: DragEvent): void {
-    throw new Error("Method not implemented.");
+    const projectId = event.dataTransfer!.getData('text/plain')
+    projectState.moveProject(
+      projectId,
+      this.type === 'active' ? Status.Active : Status.Finished
+    );
   }
 
-  dragLeaveHandler(event: DragEvent): void {
-    throw new Error("Method not implemented.");
+  @autoBind
+  dragLeaveHandler(_: DragEvent): void {
+    const listEl = this.element.querySelector('ul')!;
+    listEl.classList.remove('droppable');
   }
 
   render() {
@@ -254,6 +279,10 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> implements Drag
   };
 
   configure() {
+    this.element.addEventListener('dragover', this.dragOverHandler);
+    this.element.addEventListener('dragleave', this.dragLeaveHandler);
+    this.element.addEventListener('drop', this.dropHandler);
+
     projectState.addListener((projects: Project[]) => {
       const filteredProjects = projects.filter(project => {
         if (this.type === 'active') {
