@@ -1,20 +1,13 @@
-namespace App {
-  /* NOTE Status enum */
-  export enum Status {
-    Active,
-    Finished
-  }
+import { Status } from '../helpers/helpers.js';
 
-  /* NOTE Project class */
-  export class Project {
-    constructor(
-      public id: string,
-      public title: string,
-      public description: string,
-      public people: number,
-      public status: Status
-    ) {
-
-    }
+/* NOTE Project class */
+export default class Project {
+  constructor(
+    public id: string,
+    public title: string,
+    public description: string,
+    public people: number,
+    public status: Status
+  ) {
   }
 }
