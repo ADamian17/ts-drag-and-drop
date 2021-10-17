@@ -2,22 +2,24 @@
   "name": "ts-drag-and-drop",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "webpack-dev-server",
+    "build": "webpack --config webpack.config.production.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ADamian17/ts-drag-and-drop.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Adonis D. Martin",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/ADamian17/ts-drag-and-drop/issues"
   },
   "homepage": "https://github.com/ADamian17/ts-drag-and-drop#readme",
-  "dependencies": {
+  "devDependencies": {
+    "clean-webpack-plugin": "^4.0.0",
     "ts-loader": "^9.2.6",
     "typescript": "^4.4.4",
     "webpack": "^5.58.2",

@@ -1,7 +1,7 @@
-import Component from './Component.js';
-import { validate, Validatable } from '../utils/validation.js';
-import { autoBind } from '../decorators/autobind.js';
-import { projectState } from '../state/projects.js';
+import Component from './Component';
+import { validate, Validatable } from '../utils/validation';
+import { autoBind } from '../decorators/autobind';
+import { projectState } from '../state/projects';
 
 /* NOTE Project Form */
 export default class ClientForm extends Component<HTMLDivElement, HTMLFormElement>{

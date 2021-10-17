@@ -1,4 +1,4 @@
-import { Status } from '../helpers/helpers.js';
+import { Status } from '../helpers/helpers';
 
 /* NOTE Project class */
 export default class Project {

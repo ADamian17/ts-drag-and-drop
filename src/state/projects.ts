@@ -1,5 +1,5 @@
-import Project from '../models/Project.js';
-import { Status } from '../helpers/helpers.js';
+import Project from '../models/Project';
+import { Status } from '../helpers/helpers';
 
 /* NOTE Listener custom type */
 type Listener<ItemType> = (items: ItemType[]) => void;

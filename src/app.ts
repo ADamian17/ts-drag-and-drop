@@ -1,5 +1,5 @@
-import ClientForm from './components/project.form.js';
-import ProjectList from './components/project.list.js';
+import ClientForm from './components/project.form';
+import ProjectList from './components/project.list';
 
 new ClientForm()
 new ProjectList('active');
